@@ -1,13 +1,12 @@
 package com.booking.controller;
 
+import com.booking.dto.ReservationFilterRequest;
 import com.booking.dto.ReservationRequest;
 import com.booking.dto.ReservationResponse;
 import com.booking.dto.ReservationUpdateRequest;
-import com.booking.model.ReservationStatus;
 import com.booking.security.AppUserDetails;
 import com.booking.service.ReservationService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,15 +23,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-
 @RestController
 @RequestMapping("/api/reservations")
-@Validated
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -49,12 +43,10 @@ public class ReservationController {
      */
     @GetMapping
     public Page<ReservationResponse> list(
-            @RequestParam(required = false) ReservationStatus status,
-            @RequestParam(required = false) @DecimalMin(value = "0.0", message = "minPrice cannot be negative") BigDecimal minPrice,
-            @RequestParam(required = false) @DecimalMin(value = "0.0", message = "maxPrice cannot be negative") BigDecimal maxPrice,
+            @Valid @ParameterObject ReservationFilterRequest filter,
             @ParameterObject @PageableDefault(sort = "startTime", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal AppUserDetails me) {
-        return reservationService.list(me, status, minPrice, maxPrice, pageable);
+        return reservationService.list(me, filter.status(), filter.minPrice(), filter.maxPrice(), pageable);
     }
 
     @GetMapping("/{id}")

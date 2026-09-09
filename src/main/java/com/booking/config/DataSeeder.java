@@ -53,7 +53,7 @@ public class DataSeeder implements CommandLineRunner {
         Resource innova = resources.save(new Resource("Toyota Innova", "VEHICLE", "Company car, KA-01-AB-1234", 6));
         Resource projector = resources.save(new Resource("Epson Projector", "EQUIPMENT", "Full HD, comes with an HDMI cable", null));
 
-        // a few reservations so filtering/pagination can be tried right away
+        // Create sample reservations with start times offset by days from now (daysFromNow parameter in at() method)
         seedReservation(roomA, arjun, at(1, 10), at(1, 12), "499.00", ReservationStatus.PENDING);
         seedReservation(innova, arjun, at(2, 9), at(2, 17), "1200.50", ReservationStatus.CONFIRMED);
         seedReservation(projector, arjun, at(3, 14), at(3, 16), "250.00", ReservationStatus.CANCELLED);
