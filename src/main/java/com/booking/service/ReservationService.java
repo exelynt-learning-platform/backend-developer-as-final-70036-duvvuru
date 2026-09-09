@@ -68,7 +68,8 @@ public class ReservationService {
         }
 
         // the booking always belongs to the caller from the token, never to a userId from the request body
-        User owner = users.getReferenceById(caller.getId());
+        User owner = users.findById(caller.getId())
+                .orElseThrow(() -> new NotFoundException("User not found"));
         Reservation saved = reservations.save(
                 new Reservation(resource, owner, request.startTime(), request.endTime(), request.price()));
 

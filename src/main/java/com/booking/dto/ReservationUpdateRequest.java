@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-// PUT payload for admins. The resource itself stays fixed, everything else can change.
 public record ReservationUpdateRequest(
 
         @NotNull(message = "startTime is required")
